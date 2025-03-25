@@ -1,0 +1,10 @@
+workflows:
+  ios-workflow:
+    name: iOS Build
+    environment:
+      vars:
+        APP_NAME: "MonApp"
+    scripts:
+      - xcodebuild -workspace MonApp.xcworkspace -scheme MonApp -configuration Release clean build
+    artifacts:
+      - build/Release-iphoneos/*.ipa
