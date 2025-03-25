@@ -1,0 +1,31 @@
+import UIKit
+import CoreLocation
+
+class ViewController: UIViewController, CLLocationManagerDelegate {
+    let locationManager = CLLocationManager()
+
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        locationManager.delegate = self
+        locationManager.requestAlwaysAuthorization()
+        locationManager.startUpdatingLocation()
+    }
+
+    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        if let location = locations.last {
+            let latitude = location.coordinate.latitude
+            let longitude = location.coordinate.longitude
+            envoyerPosition(latitude: latitude, longitude: longitude)
+        }
+    }
+
+    func envoyerPosition(latitude: Double, longitude: Double) {
+        let url = URL(string: "http://192.168.1.100:5000/localisation")! // Change avec ton IP
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        let body = "latitude=\(latitude)&longitude=\(longitude)".data(using: .utf8)
+        request.httpBody = body
+        URLSession.shared.dataTask(with: request).resume()
+    }
+}
